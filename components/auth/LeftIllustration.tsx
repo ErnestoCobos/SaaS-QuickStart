@@ -3,14 +3,10 @@
 import { useRef, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 
-interface LeftIllustrationProps {
-  isAnimating: boolean
-}
-
-export function LeftIllustration({ isAnimating }: LeftIllustrationProps) {
+export function LeftIllustration() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
-  const [eyesLookingUp, setEyesLookingUp] = useState(false)
+  const [eyesLookingUp, ] = useState(false)
 
   // Detecta posición del ratón dentro del contenedor
   useEffect(() => {
@@ -54,7 +50,6 @@ export function LeftIllustration({ isAnimating }: LeftIllustrationProps) {
   return (
     <motion.div 
       className="hidden md:flex md:w-1/2 bg-gradient-to-b from-[#ffd4d4] to-[#ffe8e0] items-center justify-center p-12 relative overflow-hidden"
-      animate={isAnimating ? { x: "-100%" } : { x: "0%" }}
       transition={{ duration: 0.5 }}
     >
       <style jsx>{`
