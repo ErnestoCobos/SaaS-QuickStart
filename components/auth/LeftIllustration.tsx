@@ -1,14 +1,21 @@
 "use client"
 
-import { useRef, useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 
-export function LeftIllustration() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
-  const [eyesLookingUp, ] = useState(false)
+const floatAnimation = `
+@keyframes float {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(20px); }
+  100% { transform: translateX(0px); }
+}
+`
 
-  // Detecta posición del ratón dentro del contenedor
+export function LeftIllustration() {
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
+  const [eyesLookingUp, setEyesLookingUp] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       if (containerRef.current) {
@@ -26,7 +33,6 @@ export function LeftIllustration() {
     }
   }, [])
 
-  // Calcula la posición de los ojos
   const calculateEyePosition = (baseX: number, baseY: number) => {
     if (eyesLookingUp) {
       return { x: baseX, y: baseY - 3 }
@@ -41,23 +47,15 @@ export function LeftIllustration() {
     return { x, y }
   }
 
-  // OPCIONAL: puedes exponer una función para forzar la mirada hacia arriba
-  // o usar un estado externo. Aquí se pone un ejemplo de un "setEyesLookingUp"
-  // que podrías controlar desde arriba si lo deseas.
-  // Por simplicidad lo dejamos local; si deseas controlarlo desde el padre,
-  // recibirías un prop "eyesLookingUp" en vez de setEyesLookingUp local.
-
   return (
     <motion.div 
-      className="hidden md:flex md:w-1/2 bg-gradient-to-b from-[#ffd4d4] to-[#ffe8e0] items-center justify-center p-12 relative overflow-hidden"
+      className="h-full w-full bg-gradient-to-b from-[#ffd4d4] to-[#ffe8e0] flex items-center justify-center p-12 relative overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <style jsx>{`
-        @keyframes float {
-          0% { transform: translateX(0px); }
-          50% { transform: translateX(20px); }
-          100% { transform: translateX(0px); }
-        }
+        ${floatAnimation}
         .cloud {
           position: absolute;
           background: white;
@@ -67,6 +65,12 @@ export function LeftIllustration() {
           width: 80px;
           height: 50px;
         }
+        .cloud:nth-child(1) { top: 10%; left: 10%; animation-duration: 23s; }
+        .cloud:nth-child(2) { top: 20%; right: 15%; animation-duration: 26s; }
+        .cloud:nth-child(3) { top: 35%; left: 25%; animation-duration: 22s; }
+        .cloud:nth-child(4) { top: 15%; left: 60%; animation-duration: 28s; }
+        .cloud:nth-child(5) { top: 40%; right: 20%; animation-duration: 25s; }
+
         .tower {
           position: absolute;
           bottom: 40px;
@@ -76,11 +80,13 @@ export function LeftIllustration() {
           z-index: 15;
           transform: rotate(-5deg);
         }
+
         .tower-main,
         .tower-top,
         .tower-roof {
           transform: rotate(5deg);
         }
+
         .tower-main {
           position: absolute;
           bottom: 0;
@@ -92,6 +98,7 @@ export function LeftIllustration() {
           border-radius: 8px 8px 0 0;
           box-shadow: inset -10px 0 15px -5px rgba(0,0,0,0.1);
         }
+
         .tower-main::after {
           content: '';
           position: absolute;
@@ -102,6 +109,7 @@ export function LeftIllustration() {
           background: #ffc2c2;
           border-radius: 5px 5px 0 0;
         }
+
         .tower-top {
           position: absolute;
           bottom: 105px;
@@ -113,6 +121,7 @@ export function LeftIllustration() {
           border-radius: 8px 8px 0 0;
           box-shadow: inset -10px 0 15px -5px rgba(0,0,0,0.1);
         }
+
         .tower-top::after {
           content: '';
           position: absolute;
@@ -123,6 +132,7 @@ export function LeftIllustration() {
           background: #ffd4d4;
           border-radius: 5px 5px 0 0;
         }
+
         .tower-roof {
           position: absolute;
           bottom: 135px;
@@ -134,6 +144,7 @@ export function LeftIllustration() {
           border-right: 22px solid transparent;
           border-bottom: 22px solid #ffd4d4;
         }
+
         .window {
           position: absolute;
           width: 12px;
@@ -143,24 +154,28 @@ export function LeftIllustration() {
           box-shadow: inset 0 -5px 10px -5px rgba(0,0,0,0.1);
           transform: rotate(5deg);
         }
+
         .window:nth-child(1) { top: 15px; left: 8px; }
         .window:nth-child(2) { top: 15px; right: 8px; }
         .window:nth-child(3) { top: 45px; left: 8px; }
         .window:nth-child(4) { top: 45px; right: 8px; }
         .window:nth-child(5) { top: 75px; left: 8px; }
         .window:nth-child(6) { top: 75px; right: 8px; }
+
         .tower-top .window {
           width: 10px;
           height: 14px;
           top: 8px;
+          transform: rotate(5deg);
         }
+
         .tower-top .window:nth-child(1) { left: 10px; }
         .tower-top .window:nth-child(2) { right: 10px; }
       `}</style>
 
-      {/* Ilustraciones de fondo */}
+      {/* Background Illustration */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Torre */}
+        {/* Medieval Tower */}
         <div className="tower">
           <div className="tower-roof"></div>
           <div className="tower-top">
@@ -177,17 +192,17 @@ export function LeftIllustration() {
           </div>
         </div>
 
-        {/* Nubes */}
-        <div className="cloud" style={{ top: '10%', left: '10%', animationDuration: '23s' }}></div>
-        <div className="cloud" style={{ top: '20%', right: '15%', animationDuration: '26s' }}></div>
-        <div className="cloud" style={{ top: '35%', left: '25%', animationDuration: '22s' }}></div>
-        <div className="cloud" style={{ top: '15%', left: '60%', animationDuration: '28s' }}></div>
-        <div className="cloud" style={{ top: '40%', right: '20%', animationDuration: '25s' }}></div>
+        {/* Clouds */}
+        <div className="cloud"></div>
+        <div className="cloud"></div>
+        <div className="cloud"></div>
+        <div className="cloud"></div>
+        <div className="cloud"></div>
 
-        {/* Sol */}
+        {/* Sun */}
         <div className="absolute w-32 h-32 bg-white rounded-full top-12 left-1/2 -translate-x-1/2" />
         
-        {/* Colinas */}
+        {/* Hills */}
         <div className="absolute bottom-0 left-0 right-0 h-48 z-10">
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-[#ffb5b5] rounded-[100%] translate-y-16" />
           <div className="absolute bottom-0 left-1/4 right-0 h-24 bg-[#ffc2c2] rounded-[100%] translate-y-8" />
@@ -195,10 +210,10 @@ export function LeftIllustration() {
         </div>
       </div>
 
-      {/* Figuras geométricas con ojos */}
+      {/* Geometric Shapes with Eyes */}
       <div ref={containerRef} className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[400px] h-[300px] z-30">
         <div className="absolute left-1/2 bottom-0 -translate-x-1/2">
-          {/* Rectángulo Morado */}
+          {/* Purple Rectangle */}
           <div className="absolute -translate-x-20 -translate-y-52 w-24 h-48 bg-[#8E44AD] rounded-lg flex flex-col items-center pt-4">
             <div className="flex gap-2 relative">
               <div className="w-7 h-7 bg-white rounded-full relative overflow-hidden">
@@ -221,8 +236,7 @@ export function LeftIllustration() {
               </div>
             </div>
           </div>
-
-          {/* Rectángulo Negro */}
+          {/* Black Rectangle */}
           <div className="absolute -translate-x-4 -translate-y-40 w-20 h-36 bg-black rounded-lg flex flex-col items-center pt-4">
             <div className="flex gap-2 relative">
               <div className="w-7 h-7 bg-white rounded-full relative overflow-hidden">
@@ -245,8 +259,7 @@ export function LeftIllustration() {
               </div>
             </div>
           </div>
-
-          {/* Óvalo Amarillo */}
+          {/* Yellow Oval */}
           <div className="absolute translate-x-12 -translate-y-36 w-24 h-32 bg-[#F1C40F] rounded-full flex flex-col items-center justify-center">
             <div className="w-7 h-7 bg-white rounded-full relative overflow-hidden mb-2">
               <motion.div
@@ -259,8 +272,7 @@ export function LeftIllustration() {
             </div>
             <div className="w-8 h-1 bg-black rounded-full" />
           </div>
-
-          {/* Semicírculo Naranja */}
+          {/* Orange Semicircle */}
           <div className="absolute -translate-x-8 -translate-y-20 w-32 h-16 bg-[#FFA726] rounded-t-full flex flex-col items-center pt-4">
             <div className="flex gap-4 relative">
               <div className="w-7 h-7 bg-white rounded-full relative overflow-hidden">

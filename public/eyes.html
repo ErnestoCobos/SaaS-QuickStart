@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ojos que Siguen el Mouse</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            gap: 50px;
+        }
+
+        .face {
+            width: 200px;
+            height: 200px;
+            background: #ffdb99;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .eye {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #333;
+        }
+
+        .pupil {
+            width: 25px;
+            height: 25px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            transition: all 0.1s ease;
+        }
+
+        .mouth {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 30px;
+            border-bottom: 4px solid #333;
+            border-radius: 0 0 100px 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="face">
+            <div class="eye">
+                <div class="pupil"></div>
+            </div>
+            <div class="eye">
+                <div class="pupil"></div>
+            </div>
+            <div class="mouth"></div>
+        </div>
+        <div class="face">
+            <div class="eye">
+                <div class="pupil"></div>
+            </div>
+            <div class="eye">
+                <div class="pupil"></div>
+            </div>
+            <div class="mouth"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const pupils = document.querySelectorAll('.pupil');
+            pupils.forEach(pupil => {
+                const rect = pupil.parentElement.getBoundingClientRect();
+                const eyeCenterX = rect.left + rect.width / 2;
+                const eyeCenterY = rect.top + rect.height / 2;
+                
+                // Calcular el ángulo entre el mouse y el centro del ojo
+                const angle = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
+                
+                // Calcular la distancia máxima que puede moverse la pupila
+                const maxDistance = (rect.width - pupil.offsetWidth) / 4;
+                
+                // Calcular la nueva posición de la pupila
+                const pupilX = Math.cos(angle) * maxDistance;
+                const pupilY = Math.sin(angle) * maxDistance;
+                
+                // Aplicar la transformación
+                pupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
