@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+// Extend Clerk User information
+model UserProfile {
+  id            String         @id
+  email         String         @unique
+  firstName     String?
+  lastName      String?
+  memberships   Membership[]
+  notifications Notification[]
+  auditLogs     AuditLog[]    // Relation to audit logs
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+// Notifications
+model Notification {
+  id          String      @id @default(cuid())
+  userId      String
+  title       String
+  message     String
+  read        Boolean     @default(false)
+  archived    Boolean     @default(false)
+  type        String?
+  link        String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, archived, createdAt])
+}
+
+model Organization {
+  id          String       @id @default(cuid())
+  name        String
+  slug        String       @unique
+  imageUrl    String?
+  members     Membership[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+enum MembershipRole {
+  OWNER       // Full system access
+  ADMIN       // Administrative access
+  MANAGER     // Can manage team and resources
+  MEMBER      // Standard user access
+  VIEWER      // Read-only access
+  GUEST       // Limited access
+}
+
+// Permissions for granular access control
+model Permission {
+  id          String       @id @default(cuid())
+  name        String      // e.g., "create:users", "delete:organizations"
+  description String?
+  roles       Role[]      @relation("RolePermissions")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([name])
+}
+
+// Role model for grouping permissions
+model Role {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  permissions Permission[] @relation("RolePermissions")
+  roleAssignments MembershipToRole[] @relation("RoleAssignments")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([name])
+}
+
+model Membership {
+  id             String         @id @default(cuid())
+  role          MembershipRole @default(MEMBER)
+  roleAssignments MembershipToRole[] @relation("MembershipRoleAssignments")
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+  user           UserProfile    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([userId, organizationId])
+  @@index([organizationId])
+}
+
+// Join table for Membership and Role
+model MembershipToRole {
+  id           String     @id @default(cuid())
+  membership   Membership @relation("MembershipRoleAssignments", fields: [membershipId], references: [id], onDelete: Cascade)
+  membershipId String
+  role         Role       @relation("RoleAssignments", fields: [roleId], references: [id], onDelete: Cascade)
+  roleId       String
+  createdAt    DateTime   @default(now())
+
+  @@unique([membershipId, roleId])
+  @@index([membershipId])
+  @@index([roleId])
+}
+
+// Audit logs for tracking user actions
+model AuditLog {
+  id          String    @id @default(cuid())
+  action      String    // e.g., "create", "update", "delete"
+  entityType  String    // e.g., "user", "organization", "role"
+  entityId    String    // ID of the affected entity
+  userId      String    // ID of the user who performed the action
+  user        UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  metadata    Json?     // Additional context about the action
+  ipAddress   String?   // IP address of the user
+  userAgent   String?   // User agent of the browser/client
+  createdAt   DateTime  @default(now())
+
+  @@index([userId, createdAt])
+  @@index([entityType, entityId])
+}
+
+// Subscription model for future Stripe integration
+model Subscription {
+  id             String       @id @default(cuid())
+  organizationId String       @unique
+  stripeCustomerId String?    @unique
+  stripePriceId   String?
+  stripeSubscriptionId String? @unique
+  status         String?
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}

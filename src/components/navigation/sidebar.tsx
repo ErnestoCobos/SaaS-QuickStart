@@ -6,9 +6,9 @@ import Link from "next/link"
 import { Command, Rocket, FolderClosed } from "lucide-react"
 import { UserButton, useUser } from "@clerk/nextjs"
 import { getIcon } from "@/lib/icon-map"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Input } from "@/components/ui/input"
+import { Badge } from "@/shared/components/atoms/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/atoms/avatar"
+import { Input } from "@/shared/components/atoms/input"
 import {
   Sidebar as SidebarContainer,
   SidebarHeader,
@@ -17,7 +17,7 @@ import {
   SidebarMenu,
   MenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/shared/components/atoms/sidebar"
 import { MenuItem as MenuItemType } from "@/lib/generate-menu"
 
 interface SidebarProps {
@@ -35,7 +35,7 @@ export function Sidebar({ menuItems }: SidebarProps) {
         <div className="flex items-center gap-3 mb-6">
           <div className="bg-black rounded-lg p-1.5">
             <img
-              src=""
+              src="/logo.png"
               alt="Prody Logo"
               width={20}
               height={20}

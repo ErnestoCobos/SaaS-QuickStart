@@ -24,6 +24,13 @@ export async function getMenuItems(): Promise<MenuItem[]> {
       iconName: "FileText",
       label: "Reports",
       href: "/reports",
+    },
+    {
+      iconName: "Bell",
+      label: "Test Notifications",
+      href: "/test-notifications",
+      badge: "New",
+      badgeVariant: "default",
     }
   ]
 }

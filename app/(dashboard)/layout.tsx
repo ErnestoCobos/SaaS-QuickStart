@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
-import { SidebarContainer } from "@/app/sidebar-container"
-import { TopNav } from "@/components/top-nav"
+import { SidebarContainer } from "@/components/navigation"
+import { TopNav } from "@/shared/components/organisms/navigation"
 
 export default async function DashboardLayout({
   children,

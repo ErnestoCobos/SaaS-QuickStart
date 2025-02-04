@@ -1,11 +1,11 @@
 import { Suspense } from "react"
 import { FolderClosed, Cog, Settings, User } from "lucide-react"
 import { auth } from "@clerk/nextjs/server"
-import { ConsolidatedBudget } from "@/components/features/dashboard/budget/ConsolidatedBudget"
-import { DealsTable } from "@/components/deals-table"
-import { Badge } from "@/components/ui/badge"
-import { MetricCard } from "@/components/features/dashboard/metrics/MetricCard"
-import { mockMetrics } from "@/components/features/dashboard/metrics/mock-data"
+import { ConsolidatedBudget } from "@/features/dashboard/components/ConsolidatedBudget"
+import { DealsTable } from "@/features/dashboard/components/deals"
+import { Badge } from "@/shared/components/atoms/badge"
+import { MetricCard } from "@/features/dashboard/components/metrics"
+import { mockMetrics } from "@/features/dashboard/constants/metrics"
 
 function LoadingState() {
   return (

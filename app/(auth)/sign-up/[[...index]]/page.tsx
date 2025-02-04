@@ -3,8 +3,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
-import { SignUpIllustration } from "@/components/auth/SignUpIllustration" 
-import { SignUpForm } from "@/components/auth/SignUpForm"
+import { SignUpIllustration, SignUpForm } from "@/features/auth/components"
 
 export default function SignUpPage() {
 
